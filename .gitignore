@@ -1,0 +1,14 @@
+# Never commit these
+config_local.py
+*.env
+.env*
+logs/
+data/
+__pycache__/
+*.pyc
+
+# Explicitly block any accidental credential files
+*password*
+*secret*
+*credential*
+*token*
