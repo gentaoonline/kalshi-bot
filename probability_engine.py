@@ -208,16 +208,16 @@ class ProbabilityEngine:
             return None
 
     def _fetch_gdpnow(self) -> float | None:
-        """Fetches Atlanta Fed GDPNow latest estimate from FRED."""
+        """Fetches Atlanta Fed GDPNow — live from Atlanta Fed page."""
         try:
-            # GDPNow is published on FRED as GDPNOW
-            url = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GDPNOW"
-            resp = requests.get(url, timeout=TIMEOUT)
-            lines = [l for l in resp.text.strip().split("\n")
-                     if "," in l and not l.startswith("D")]
-            if not lines:
-                return None
-            return float(lines[-1].split(",")[1])
+            import sys, os
+            sys.path.insert(0, os.path.dirname(__file__))
+            from data_sources.gdpnow import fetch as gdpnow_fetch
+            val, source, date = gdpnow_fetch()
+            if val is not None:
+                logger.info(f"GDPNow: {val}% (source={source}, date={date})")
+                return val
+            return None
         except Exception as e:
             logger.warning(f"GDPNow fetch failed: {e}")
             return None
